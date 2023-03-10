@@ -4,3 +4,9 @@ UnityCamera/Logs/
 UnityCamera/Temp/
 UnityCamera/UserSettings/
 UnityCamera/Assets/StreamingAssets/
+*.csproj
+UnityCamera/Assets/Samples/Cinemachine/
+UnityCamera/obj/
+*.vsidx
+*.suo
+UnityCamera/.vs/UnityCamera/FileContentIndex/
