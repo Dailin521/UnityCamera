@@ -2,13 +2,13 @@
 using DG.Tweening;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class CameraMove : MonoBehaviour
 {
-
     private float xMove;
     private float yMove;
     Vector3 moveDir;
-    [SerializeField] Vector3 inputDir;
+    Vector3 inputDir;
     [Header("左键移动速度")]
     [SerializeField] private float moveSpeed = 1;
     [Header("右键旋转速度")]
@@ -22,9 +22,6 @@ public class CameraMove : MonoBehaviour
     Vector2 currentMousePos;
     private float initialEdgeMoveSpeed = 0;
     public CinemachineVirtualCamera virtualCamera;
-
-
-
     void Init()
     {
         initialEdgeMoveSpeed = edgeMoveSpeed;
@@ -58,7 +55,7 @@ public class CameraMove : MonoBehaviour
         {
             edgeMoveSpeed = initialEdgeMoveSpeed;
         }
-        if (isEdgeScrolling)
+        if (isEdgeScrolling && Application.isPlaying)
         {
             currentMousePos = Input.mousePosition;
             if (currentMousePos.x < edgeScrollSize)
@@ -82,26 +79,27 @@ public class CameraMove : MonoBehaviour
         transform.position += moveDir * moveSpeed * edgeMoveSpeed * Time.deltaTime;
 
     }
-    [SerializeField] float taregtRotateY = 10;
-    float followY = 45;
+    [SerializeField][Header("Y方向角度"), Range(15, 60)] float followYAngle = 45;
     void CameraRotate()
     {
         if (Input.GetMouseButton(1))
         {
             transform.localEulerAngles += new Vector3(0, Input.GetAxis("Mouse X") * rotateSpeed, 0);
+            followYAngle += Input.GetAxis("Mouse Y");
+            followYAngle = Mathf.Clamp(followYAngle, 15, 60);
             followOffest = virtualCamera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset;
-            taregtRotateY = followOffest.y;
-            followY += Input.GetAxis("Mouse Y");
-            followY = Mathf.Clamp(followY, 15, 60);
-            virtualCamera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset = new Vector3(followOffest.x, -followOffest.z * (Mathf.Tan(Mathf.Deg2Rad * followY)), followOffest.z);
+            virtualCamera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset = new Vector3(followOffest.x, -followOffest.z * (Mathf.Tan(Mathf.Deg2Rad * followYAngle)), followOffest.z);
         }
     }
     private Vector3 followOffest;
+    [Header("最大缩放")]
     [SerializeField] float maxScrollSize = 50;
+    [Header("最小缩放")]
     [SerializeField] float minScrollSize = 5;
     float currentScrollSize = 10;
     [Header("缩放平滑")]
     [SerializeField] private float scrollDamping = 10;
+    [Header("目标缩放值")]
     [SerializeField] float taregtScrollSize = 10;
     //用于设置相机 缩放大小
     public float CameraScrollSize
@@ -127,7 +125,8 @@ public class CameraMove : MonoBehaviour
         taregtScrollSize = Mathf.Clamp(taregtScrollSize, minScrollSize, maxScrollSize);
         currentScrollSize = Mathf.Lerp(currentScrollSize, taregtScrollSize, Time.deltaTime * scrollDamping);
         followOffest = virtualCamera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset;
-        virtualCamera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset = followOffest.normalized * currentScrollSize;
+        Vector3 vector3 = new Vector3(followOffest.x, -followOffest.z * (Mathf.Tan(Mathf.Deg2Rad * followYAngle)), followOffest.z);
+        virtualCamera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset = vector3.normalized * currentScrollSize;
     }
     void InitScrollSize()
     {
@@ -137,20 +136,36 @@ public class CameraMove : MonoBehaviour
     }
     void ClickMove()
     {
-        if (IsDoubleClick(0))
+        if (IsDoubleClick((int)SwitchMouse.左键))
         {
             RaycastHit hit;
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             {
                 transform.DOKill();
-                transform.DOMove(hit.transform.position, 1f).OnComplete(() =>
-                {
-                    DOTween.To(() => CameraScrollSize, x => CameraScrollSize = x, 10, 1);
-                });
 
+                if (hit.collider.GetComponent<CameraInitInform>() != null)
+                {
+                    Debug.Log("双击事件");
+                    var a = hit.collider.GetComponent<CameraInitInform>();
+                    transform.DORotate(new Vector3(0, a.X_Rotate, 0), 1);
+                    DOTween.To(() => followYAngle, x => followYAngle = x, a.Y_Rotate, 1);
+                    transform.DOMove(hit.transform.position, 1f).OnComplete(() =>
+                    {
+                        DOTween.To(() => taregtScrollSize, x => taregtScrollSize = x, a.Scroll, 1);
+                    });
+                }
+                else
+                {
+                    transform.DOMove(hit.transform.position, 1f).OnComplete(() =>
+                    {
+                        DOTween.To(() => CameraScrollSize, x => CameraScrollSize = x, 10, 1);
+                    });
+                }
             }
         }
     }
+    //鼠标双击等事件
+    enum SwitchMouse { 左键, 右键, 中键 }//注意添加显示转换
     int clickCout = 1;
     float lastClickTime = 0;
     float clickTime = 0.3f;
