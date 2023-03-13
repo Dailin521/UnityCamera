@@ -1,4 +1,5 @@
 ﻿using Cinemachine;
+using DG.Tweening;
 using UnityEngine;
 
 public class CameraMove : MonoBehaviour
@@ -39,11 +40,12 @@ public class CameraMove : MonoBehaviour
         HandleCameraMove();
         CameraZoom();
         CameraRotate();
+        ClickMove();
     }
     void HandleCameraMove()
     {
-        xMove = Input.GetAxis("Horizontal");
-        yMove = Input.GetAxis("Vertical");
+        xMove = Input.GetAxis("Horizontal") * 0.1f;
+        yMove = Input.GetAxis("Vertical") * 0.1f;
         inputDir.z = yMove;
         inputDir.x = xMove;
         if (Input.GetMouseButton(0))
@@ -129,9 +131,51 @@ public class CameraMove : MonoBehaviour
     }
     void InitScrollSize()
     {
-
         Vector3 temp = virtualCamera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset;
         taregtScrollSize = temp.y / temp.normalized.y;
         currentScrollSize = taregtScrollSize;
+    }
+    void ClickMove()
+    {
+        if (IsDoubleClick(0))
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+            {
+                transform.DOKill();
+                transform.DOMove(hit.transform.position, 1f).OnComplete(() =>
+                {
+                    DOTween.To(() => CameraScrollSize, x => CameraScrollSize = x, 10, 1);
+                });
+
+            }
+        }
+    }
+    int clickCout = 1;
+    float lastClickTime = 0;
+    float clickTime = 0.3f;
+    bool IsDoubleClick(int mouse)
+    {
+        if (Input.GetMouseButtonDown(mouse))
+        {
+            if ((Time.realtimeSinceStartup - lastClickTime) < clickTime)
+            {
+                Debug.Log("间隔内点击");
+                clickCout += 1;
+            }
+            else
+            {
+                clickCout = 1;
+                lastClickTime = Time.realtimeSinceStartup;
+                Debug.Log("单击");
+            }
+
+            if (clickCout == 2)
+            {
+                Debug.Log("双击");
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -5,6 +5,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AimingRig", "AimingRig.csproj", "{6E2AE330-8BBF-7CE9-8549-1BC42FF7B91D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-firstpass", "Assembly-CSharp-firstpass.csproj", "{11FF6B45-8E90-DC89-6A0E-A66B1882127C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor-firstpass", "Assembly-CSharp-Editor-firstpass.csproj", "{394F9255-86E4-2B2C-7CBE-7AE4F3EB3254}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +23,14 @@ Global
 		{6E2AE330-8BBF-7CE9-8549-1BC42FF7B91D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E2AE330-8BBF-7CE9-8549-1BC42FF7B91D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E2AE330-8BBF-7CE9-8549-1BC42FF7B91D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11FF6B45-8E90-DC89-6A0E-A66B1882127C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11FF6B45-8E90-DC89-6A0E-A66B1882127C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11FF6B45-8E90-DC89-6A0E-A66B1882127C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11FF6B45-8E90-DC89-6A0E-A66B1882127C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{394F9255-86E4-2B2C-7CBE-7AE4F3EB3254}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{394F9255-86E4-2B2C-7CBE-7AE4F3EB3254}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{394F9255-86E4-2B2C-7CBE-7AE4F3EB3254}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{394F9255-86E4-2B2C-7CBE-7AE4F3EB3254}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
