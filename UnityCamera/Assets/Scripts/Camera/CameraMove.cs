@@ -79,7 +79,7 @@ public class CameraMove : MonoBehaviour
         transform.position += moveDir * moveSpeed * edgeMoveSpeed * Time.deltaTime;
 
     }
-    [SerializeField][Header("Y方向角度"), Range(15, 60)] float followYAngle = 45;
+    [SerializeField][Header("Y方向角度"), Range(15, 60)] public float followYAngle = 45;
     void CameraRotate()
     {
         if (Input.GetMouseButton(1))

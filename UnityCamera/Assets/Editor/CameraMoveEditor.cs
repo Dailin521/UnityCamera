@@ -1,4 +1,6 @@
 ﻿using UnityEditor;
+using UnityEngine;
+
 [CustomEditor(typeof(CameraMove), true)] //特性来描述要自定义的是哪个类, 第二个参数代表是否对其子类起效.
 public class CameraMoveEditor : Editor
 {
@@ -30,8 +32,10 @@ public class CameraMoveEditor : Editor
             EditorGUILayout.PropertyField(m_edgeScroSize);
             EditorGUILayout.PropertyField(m_edgeScroMove);
         }
+        GUI.enabled = false;
         EditorGUILayout.PropertyField(serializedObject.FindProperty("moveSpeed"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("rotateSpeed"));
+        GUI.enabled = true;
         EditorGUILayout.PropertyField(serializedObject.FindProperty("followYAngle"));
         EditorGUILayout.Space(5);
         EditorGUILayout.PropertyField(serializedObject.FindProperty("maxScrollSize"));

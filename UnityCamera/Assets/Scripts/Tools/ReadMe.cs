@@ -3,6 +3,6 @@
 public class ReadMe : MonoBehaviour
 {
     // Start is called before the first frame update
-    [TextAreaAttribute]
+    [TextAreaAttribute(20, 20)]
     public string readMe;
 }
