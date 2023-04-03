@@ -1,5 +1,6 @@
 ﻿using Cinemachine;
 using DG.Tweening;
+using System;
 using UnityEngine;
 
 [ExecuteInEditMode]
@@ -141,26 +142,7 @@ public class CameraMove : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             {
-                transform.DOKill();
-
-                if (hit.collider.GetComponent<CameraInitInform>() != null)
-                {
-                    Debug.Log("双击事件");
-                    var a = hit.collider.GetComponent<CameraInitInform>();
-                    transform.DORotate(new Vector3(0, a.X_Rotate, 0), 1);
-                    DOTween.To(() => followYAngle, x => followYAngle = x, a.Y_Rotate, 1);
-                    transform.DOMove(hit.transform.position, 1f).OnComplete(() =>
-                    {
-                        DOTween.To(() => taregtScrollSize, x => taregtScrollSize = x, a.Scroll, 1);
-                    });
-                }
-                else
-                {
-                    transform.DOMove(hit.transform.position, 1f).OnComplete(() =>
-                    {
-                        DOTween.To(() => CameraScrollSize, x => CameraScrollSize = x, 10, 1);
-                    });
-                }
+                onClickAction?.Invoke(hit.transform);
             }
         }
     }
@@ -193,4 +175,34 @@ public class CameraMove : MonoBehaviour
         }
         return false;
     }
+    void OnClickAct(Transform trans)
+    {
+        transform.DOKill();
+        if (trans.GetComponent<CameraInitInform>() != null)
+        {
+            Debug.Log("双击事件");
+            var a = trans.GetComponent<CameraInitInform>();
+            transform.DORotate(new Vector3(0, a.X_Rotate, 0), 1);
+            DOTween.To(() => followYAngle, x => followYAngle = x, a.Y_Rotate, 1);
+            transform.DOMove(trans.transform.position, 1f).OnComplete(() =>
+            {
+                DOTween.To(() => taregtScrollSize, x => taregtScrollSize = x, a.Scroll, 1);
+            });
+        }
+        else
+        {
+            transform.DOMove(trans.transform.position, 1f).OnComplete(() =>
+            {
+                DOTween.To(() => CameraScrollSize, x => CameraScrollSize = x, 10, 1);
+            });
+        }
+    }
+    private void Start()
+    {
+        onClickAction = OnClickAct;
+    }
+    // 声明一个action类型的实例
+    public Action<Transform> onClickAction;
+
+
 }
